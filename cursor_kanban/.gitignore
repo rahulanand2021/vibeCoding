@@ -1,0 +1,10 @@
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/playwright-report/
+frontend/test-results/
+frontend/coverage/
+.env*
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
