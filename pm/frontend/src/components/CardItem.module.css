@@ -1,0 +1,77 @@
+.card {
+  background: var(--surface-strong);
+  border-radius: var(--radius-md);
+  padding: 14px 14px 16px;
+  border: 1px solid rgba(3, 33, 71, 0.08);
+  box-shadow: var(--shadow-card);
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  touch-action: none;
+  user-select: none;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+/* Hollow placeholder left at the drag source */
+.ghost {
+  border-radius: var(--radius-md);
+  border: 2px dashed rgba(3, 33, 71, 0.18);
+  background: rgba(3, 33, 71, 0.04);
+  min-height: 72px;
+  touch-action: none;
+}
+
+/* Floating card that follows the cursor */
+.overlay {
+  cursor: grabbing;
+  box-shadow: 0 16px 40px rgba(3, 33, 71, 0.22), 0 4px 12px rgba(3, 33, 71, 0.12);
+  transform: scale(1.03) rotate(1deg);
+  border: 1px solid rgba(3, 33, 71, 0.14);
+  pointer-events: none;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dark-navy);
+}
+
+.cardDetails {
+  margin: 0;
+  color: var(--gray-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.cardActions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.iconButton {
+  border: none;
+  background: transparent;
+  padding: 2px;
+  color: #111111;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  color: #b8001f;
+}
