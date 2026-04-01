@@ -6,7 +6,9 @@
       "Bash(npm test:*)",
       "Bash(node -e \"const fs=require\\(''fs''\\); const html=fs.readFileSync\\(''out/index.html'',''utf8''\\); console.log\\(html.includes\\(''chatButton''\\) || html.includes\\(''AI Assistant''\\) ? ''Chat found in build'' : ''Chat NOT in build''\\);\")",
       "Bash(npm run:*)",
-      "Bash(node -e \"const fs=require\\(''fs''\\); const html=fs.readFileSync\\(''out/index.html'',''utf8''\\); console.log\\(html.includes\\(''AI Assistant''\\) ? ''Chat found in build'' : ''Chat NOT in build''\\);\")"
+      "Bash(node -e \"const fs=require\\(''fs''\\); const html=fs.readFileSync\\(''out/index.html'',''utf8''\\); console.log\\(html.includes\\(''AI Assistant''\\) ? ''Chat found in build'' : ''Chat NOT in build''\\);\")",
+      "Bash(pip install:*)",
+      "Bash(docker exec:*)"
     ]
   }
 }

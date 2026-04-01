@@ -1,7 +1,11 @@
+import json
+import logging
 import os
 from typing import Any, Dict, List, Optional
 
-from openai import OpenAI
+from openai import OpenAI, APIError, RateLimitError, APIConnectionError
+
+logger = logging.getLogger(__name__)
 
 
 def get_ai_client() -> OpenAI:
@@ -27,10 +31,10 @@ def ping_ai() -> str:
 def query_ai(
     query: str,
     board: Optional[Dict[str, Any]] = None,
-    conversation: Optional[list[Dict[str, Any]]] = None,
+    conversation: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Query AI with optional board context and conversation history.
-    
+
     Returns structured response with text, boardUpdate, and actions.
     """
     if not query.strip():
@@ -38,7 +42,6 @@ def query_ai(
 
     client = get_ai_client()
 
-    # Build system message with board context and structured output instructions
     system_msg = (
         "You are a helpful project management assistant. Help users manage their Kanban board efficiently.\n\n"
         "You can perform the following board operations:\n"
@@ -69,41 +72,58 @@ def query_ai(
         "If no board changes are needed, set boardUpdate to null.\n"
         "Always respond with valid JSON."
     )
-    
+
     if board:
         system_msg += f"\n\nCurrent board state: {board}"
 
-    # Build messages with conversation history
     messages = [{"role": "system", "content": system_msg}]
     if conversation:
         messages.extend(conversation)
     messages.append({"role": "user", "content": query})
 
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=messages,
-        temperature=0.7,
-        max_tokens=1000,
-        response_format={"type": "json_object"}  # Force JSON response
-    )
-    
-    content = response.choices[0].message.content or "{}"
-    
     try:
-        import json
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=0.7,
+            max_tokens=1000,
+            response_format={"type": "json_object"},
+        )
+    except RateLimitError as e:
+        logger.warning("OpenAI rate limit exceeded: %s", e)
+        raise ValueError("AI service is busy, please try again shortly.")
+    except APIConnectionError as e:
+        logger.error("OpenAI connection error: %s", e)
+        raise RuntimeError("Could not connect to AI service.")
+    except APIError as e:
+        logger.error("OpenAI API error: %s", e)
+        raise RuntimeError(f"AI service error: {e}")
+
+    content = response.choices[0].message.content or "{}"
+
+    try:
         result = json.loads(content)
-        # Ensure required fields exist
-        if "text" not in result:
-            result["text"] = "I understood your request but couldn't process it properly."
-        if "boardUpdate" not in result:
-            result["boardUpdate"] = None
-        if "actions" not in result:
-            result["actions"] = None
-        return result
     except json.JSONDecodeError:
-        # Fallback if AI doesn't return valid JSON
+        logger.error("AI returned non-JSON content: %s", content[:200])
         return {
-            "text": content if content else "I couldn't process your request properly.",
+            "text": "I couldn't process your request properly.",
             "boardUpdate": None,
-            "actions": None
+            "actions": None,
         }
+
+    # Normalise required fields
+    if not isinstance(result.get("text"), str):
+        result["text"] = "I understood your request but couldn't process it properly."
+    if "boardUpdate" not in result:
+        result["boardUpdate"] = None
+    if "actions" not in result:
+        result["actions"] = None
+
+    # Validate boardUpdate shape if present
+    board_update = result.get("boardUpdate")
+    if board_update is not None:
+        if not isinstance(board_update, dict) or not isinstance(board_update.get("operations"), list):
+            logger.warning("AI returned malformed boardUpdate — discarding: %s", board_update)
+            result["boardUpdate"] = None
+
+    return result

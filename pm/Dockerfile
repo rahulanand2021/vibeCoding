@@ -15,8 +15,9 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 
 COPY backend /app/backend
 COPY --from=frontend-build /app/frontend/out /app/frontend/out
-COPY .env /app/.env
+
+# Secrets are injected at runtime via environment variables — never bake .env into the image
 
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
