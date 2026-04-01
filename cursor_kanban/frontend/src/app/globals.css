@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+:root {
+  --accent-yellow: #ecad0a;
+  --blue-primary: #209dd7;
+  --purple-secondary: #753991;
+  --dark-navy: #032147;
+  --gray-text: #888888;
+  --page-bg: #f7f9fc;
+  --card-bg: #ffffff;
+  --border-subtle: #dbe3f0;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #ffffff 0%, var(--page-bg) 55%);
+  color: var(--dark-navy);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.board-shell {
+  min-height: 100vh;
+  padding: 2.5rem 2rem 3rem;
+}
+
+.board-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--dark-navy);
+}
+
+.board-header p {
+  margin-top: 0.5rem;
+  color: var(--gray-text);
+}
+
+.board-columns {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  align-items: start;
+}
+
+.kanban-column {
+  background: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--accent-yellow);
+  border-radius: 14px;
+  padding: 0.8rem;
+  box-shadow: 0 10px 24px rgba(3, 33, 71, 0.08);
+}
+
+.rename-column-form {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  align-items: center;
+}
+
+.column-header {
+  min-height: 2.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.column-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dark-navy);
+  padding: 0.5rem 0.35rem;
+}
+
+.rename-column-form input,
+.add-card-form input,
+.add-card-form textarea {
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.column-cards {
+  min-height: 3.5rem;
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.kanban-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8eef8;
+  border-left: 3px solid var(--blue-primary);
+  border-radius: 10px;
+  padding: 0.7rem;
+  padding-right: 4.1rem;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 5px 14px rgba(3, 33, 71, 0.08);
+}
+
+.kanban-card:hover {
+  background: #fff6df;
+  border-color: #f2cd73;
+}
+
+.kanban-card-dragging {
+  cursor: grabbing;
+}
+
+.kanban-card-overlay {
+  width: 100%;
+  max-width: 260px;
+  transform: rotate(1deg);
+  box-shadow: 0 14px 30px rgba(3, 33, 71, 0.22);
+}
+
+.kanban-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.kanban-card p {
+  margin: 0 0 0.55rem;
+  color: var(--gray-text);
+  font-size: 0.86rem;
+}
+
+.add-card-form {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.add-card-trigger {
+  display: block;
+  width: fit-content;
+  margin: 0.3rem auto 0;
+  min-width: 110px;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 33, 71, 0.35);
+  backdrop-filter: blur(3px);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 1rem;
+}
+
+.modal-backdrop-soft {
+  background: radial-gradient(circle at top, rgba(32, 157, 215, 0.18) 0%, rgba(3, 33, 71, 0.32) 65%);
+  backdrop-filter: blur(5px);
+}
+
+.add-card-modal {
+  width: min(440px, 100%);
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-top: 4px solid var(--accent-yellow);
+  border-radius: 12px;
+  padding: 0.9rem;
+  box-shadow: 0 20px 40px rgba(3, 33, 71, 0.2);
+}
+
+.delete-confirm-modal {
+  width: min(420px, 100%);
+  background: linear-gradient(165deg, #ffffff 0%, #f5faff 100%);
+  border: 1px solid #d7e7fb;
+  border-top: 4px solid var(--blue-primary);
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 20px 44px rgba(3, 33, 71, 0.24);
+}
+
+.delete-confirm-modal h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--dark-navy);
+}
+
+.delete-confirm-modal p {
+  margin: 0.45rem 0 0;
+  color: #5f6f89;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-top: 0.3rem;
+}
+
+.button-primary,
+.button-secondary,
+.button-danger {
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-primary {
+  background: var(--purple-secondary);
+  color: white;
+}
+
+.button-secondary {
+  background: var(--blue-primary);
+  color: white;
+}
+
+.rename-column-form .button-secondary {
+  padding: 0.34rem 0.58rem;
+  font-size: 0.76rem;
+  line-height: 1;
+}
+
+.button-danger {
+  background: #c62828;
+  color: #ffffff;
+}
+
+.card-delete-button {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #c62828;
+  cursor: pointer;
+}
+
+.card-actions {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.card-edit-button {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #000000;
+  cursor: pointer;
+}
+
+.card-edit-button:hover {
+  background: #efefef;
+}
+
+.card-delete-button:hover {
+  background: #fde7e7;
+}
+
+.card-delete-button svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: currentColor;
+}
+
+.card-edit-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: currentColor;
+}
+
+@media (max-width: 1300px) {
+  .board-columns {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 840px) {
+  .board-columns {
+    grid-template-columns: repeat(1, minmax(220px, 1fr));
+  }
+}
