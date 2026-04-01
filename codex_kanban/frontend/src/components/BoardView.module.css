@@ -1,0 +1,25 @@
+.boardSection {
+  background: transparent;
+}
+
+.columnsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .columnsGrid {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .columnsGrid > section {
+    min-width: 240px;
+    scroll-snap-align: start;
+  }
+}

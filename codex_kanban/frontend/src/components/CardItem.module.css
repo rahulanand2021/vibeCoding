@@ -1,0 +1,62 @@
+.card {
+  background: var(--surface-strong);
+  border-radius: var(--radius-md);
+  padding: 14px 14px 16px;
+  border: 1px solid rgba(3, 33, 71, 0.08);
+  box-shadow: var(--shadow-card);
+  cursor: grab;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+.dragging {
+  opacity: 0.7;
+  box-shadow: 0 12px 26px rgba(3, 33, 71, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dark-navy);
+}
+
+.cardDetails {
+  margin: 0;
+  color: var(--gray-text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.cardActions {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.iconButton {
+  border: none;
+  background: transparent;
+  padding: 2px;
+  color: #111111;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  color: #b8001f;
+}
