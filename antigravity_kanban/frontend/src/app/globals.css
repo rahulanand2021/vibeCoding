@@ -1,0 +1,32 @@
+:root {
+  --background: #fdfdfd;
+  --foreground: #032147; /* Dark Navy for headings/text */
+  
+  --accent-yellow: #ecad0a;
+  --primary-blue: #209dd7;
+  --secondary-purple: #753991;
+  --gray-text: #888888;
+  
+  --column-bg: #f4f5f7;
+  --card-bg: #ffffff;
+  --border-color: #ebecf0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
