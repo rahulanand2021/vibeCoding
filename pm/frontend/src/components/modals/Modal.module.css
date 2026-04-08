@@ -74,6 +74,22 @@
   resize: vertical;
 }
 
+.select {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(3, 33, 71, 0.2);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  font-family: var(--font-body), sans-serif;
+  background: #fff;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .error {
   margin: 0;
   color: #b8001f;

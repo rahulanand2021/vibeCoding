@@ -11,6 +11,19 @@ type CardItemProps = {
   isOverlay?: boolean;
 };
 
+function formatDueDate(iso: string): string {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+function isDueSoon(iso: string): boolean {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(iso + "T00:00:00");
+  const diff = (due.getTime() - today.getTime()) / 86400000;
+  return diff <= 2;
+}
+
 export default function CardItem({ card, columnId, onEdit, onDelete, isOverlay }: CardItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({
@@ -90,6 +103,23 @@ export default function CardItem({ card, columnId, onEdit, onDelete, isOverlay }
         </div>
       </div>
       <p className={styles.cardDetails}>{card.details}</p>
+      {(card.priority || card.due_date || card.labels?.length) ? (
+        <div className={styles.cardMeta}>
+          {card.priority && (
+            <span className={`${styles.priorityBadge} ${styles[`priority_${card.priority}`]}`}>
+              {card.priority}
+            </span>
+          )}
+          {card.due_date && (
+            <span className={`${styles.dueDateBadge} ${isDueSoon(card.due_date) ? styles.dueSoon : ""}`}>
+              {formatDueDate(card.due_date)}
+            </span>
+          )}
+          {card.labels?.map((label) => (
+            <span key={label} className={styles.labelBadge}>{label}</span>
+          ))}
+        </div>
+      ) : null}
     </article>
   );
 }

@@ -10,6 +10,8 @@ type ColumnProps = {
   onAddCard: () => void;
   onEditCard: (cardId: string) => void;
   onDeleteCard: (cardId: string) => void;
+  onDeleteColumn?: (columnId: string) => void;
+  canDelete?: boolean;
 };
 
 export default function Column({
@@ -18,6 +20,8 @@ export default function Column({
   onAddCard,
   onEditCard,
   onDeleteCard,
+  onDeleteColumn,
+  canDelete = false,
 }: ColumnProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(column.title);
@@ -57,36 +61,64 @@ export default function Column({
       data-testid={`column-${column.id}`}
     >
       <header className={styles.columnHeader}>
-        {isEditing ? (
-          <input
-            ref={inputRef}
-            className={styles.columnInput}
-            value={draftTitle}
-            onChange={(event) => setDraftTitle(event.target.value)}
-            onBlur={commitTitle}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                commitTitle();
-              }
-              if (event.key === "Escape") {
-                setDraftTitle(column.title);
-                setIsEditing(false);
-              }
-            }}
-            aria-label="Column title"
-          />
-        ) : (
+        <div className={styles.columnTitleWrap}>
+          {isEditing ? (
+            <input
+              ref={inputRef}
+              className={styles.columnInput}
+              value={draftTitle}
+              onChange={(event) => setDraftTitle(event.target.value)}
+              onBlur={commitTitle}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  commitTitle();
+                }
+                if (event.key === "Escape") {
+                  setDraftTitle(column.title);
+                  setIsEditing(false);
+                }
+              }}
+              aria-label="Column title"
+            />
+          ) : (
+            <button
+              type="button"
+              className={styles.columnTitleButton}
+              onClick={() => setIsEditing(true)}
+              title="Click to rename"
+            >
+              <h3 className={styles.columnTitle}>{column.title}</h3>
+            </button>
+          )}
+          {!isEditing && (
+            <span className={styles.cardCount}>{column.cards.length}</span>
+          )}
+        </div>
+
+        <div className={styles.columnHeaderActions}>
           <button
             type="button"
-            className={styles.columnTitleButton}
-            onClick={() => setIsEditing(true)}
+            className={styles.addCardButton}
+            onClick={onAddCard}
+            aria-label={`Add card to ${column.title}`}
+            title="Add card"
           >
-            <h3 className={styles.columnTitle}>{column.title}</h3>
+            +
           </button>
-        )}
-        <button type="button" className={styles.addCardButton} onClick={onAddCard}>
-          Add card
-        </button>
+          {canDelete && onDeleteColumn && (
+            <button
+              type="button"
+              className={styles.deleteColumnButton}
+              onClick={() => onDeleteColumn(column.id)}
+              aria-label={`Delete column ${column.title}`}
+              title="Delete column"
+            >
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path d="M6 7h12l-1 13H7L6 7zm4-3h4l1 2H9l1-2z" fill="currentColor" />
+              </svg>
+            </button>
+          )}
+        </div>
       </header>
 
       <div

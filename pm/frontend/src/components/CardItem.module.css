@@ -1,15 +1,22 @@
 .card {
   background: var(--surface-strong);
   border-radius: var(--radius-md);
-  padding: 14px 14px 16px;
-  border: 1px solid rgba(3, 33, 71, 0.08);
+  padding: 12px 13px 13px;
+  border: 1px solid rgba(3, 33, 71, 0.07);
   box-shadow: var(--shadow-card);
   cursor: grab;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   touch-action: none;
   user-select: none;
+  transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s;
+}
+
+.card:hover {
+  box-shadow: 0 10px 24px rgba(3, 33, 71, 0.13);
+  border-color: rgba(3, 33, 71, 0.13);
+  transform: translateY(-1px);
 }
 
 .card:active {
@@ -19,16 +26,16 @@
 /* Hollow placeholder left at the drag source */
 .ghost {
   border-radius: var(--radius-md);
-  border: 2px dashed rgba(3, 33, 71, 0.18);
-  background: rgba(3, 33, 71, 0.04);
-  min-height: 72px;
+  border: 2px dashed rgba(3, 33, 71, 0.15);
+  background: rgba(3, 33, 71, 0.03);
+  min-height: 68px;
   touch-action: none;
 }
 
 /* Floating card that follows the cursor */
 .overlay {
   cursor: grabbing;
-  box-shadow: 0 16px 40px rgba(3, 33, 71, 0.22), 0 4px 12px rgba(3, 33, 71, 0.12);
+  box-shadow: 0 18px 42px rgba(3, 33, 71, 0.22), 0 4px 12px rgba(3, 33, 71, 0.12);
   transform: scale(1.03) rotate(1deg);
   border: 1px solid rgba(3, 33, 71, 0.14);
   pointer-events: none;
@@ -38,40 +45,117 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 }
 
 .cardTitle {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--dark-navy);
+  line-height: 1.35;
+  flex: 1;
 }
 
 .cardDetails {
   margin: 0;
   color: var(--gray-text);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
+/* Actions: hidden until hover ──────────────────────── */
 .cardActions {
   display: inline-flex;
-  gap: 4px;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.card:hover .cardActions,
+.card:focus-within .cardActions {
+  opacity: 1;
 }
 
 .iconButton {
   border: none;
   background: transparent;
-  padding: 2px;
-  color: #111111;
+  padding: 3px 4px;
+  color: rgba(3, 33, 71, 0.35);
   cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
 }
 
 .iconButton:hover {
-  transform: translateY(-1px);
+  background: rgba(3, 33, 71, 0.08);
+  color: var(--dark-navy);
 }
 
-.deleteButton {
+.deleteButton:hover {
+  background: rgba(184, 0, 31, 0.09);
   color: #b8001f;
+}
+
+/* Card metadata: priority, due date, labels */
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.priorityBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+}
+
+.priority_low {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+}
+
+.priority_medium {
+  background: rgba(234, 179, 8, 0.15);
+  color: #a16207;
+}
+
+.priority_high {
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
+}
+
+.dueDateBadge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(3, 33, 71, 0.07);
+  color: var(--gray-text);
+}
+
+.dueSoon {
+  background: rgba(234, 88, 12, 0.13);
+  color: #c2410c;
+}
+
+.labelBadge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.1);
+  color: #4338ca;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

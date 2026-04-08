@@ -1,30 +1,40 @@
 import { test, expect } from "@playwright/test";
 
+async function loginAsDefaultUser(page: Parameters<typeof test>[1]) {
+  await page.goto("/");
+  await page.getByLabel("Username").fill("user");
+  await page.getByLabel("Password").fill("password");
+  await page.getByRole("button", { name: /sign in/i }).click();
+  await expect(page.getByText("Kanban Flow")).toBeVisible();
+}
+
 test.describe("Kanban board", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.getByLabel("Username").fill("user");
-    await page.getByLabel("Password").fill("password");
-    await page.getByRole("button", { name: "Login" }).click();
+    await loginAsDefaultUser(page);
   });
 
   test("login and logout flow", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText("Login to Kanban Flow")).toBeVisible();
+    // Should see login heading
+    await expect(page.getByRole("heading", { name: "Kanban Flow" })).toBeVisible();
+
     await page.getByLabel("Username").fill("user");
     await page.getByLabel("Password").fill("password");
-    await page.getByRole("button", { name: "Login" }).click();
+    await page.getByRole("button", { name: /sign in/i }).click();
+
     await expect(page.getByText("Kanban Flow")).toBeVisible();
-    await page.getByRole("button", { name: "Logout" }).click();
-    await expect(page.getByText("Login to Kanban Flow")).toBeVisible();
+
+    await page.getByRole("button", { name: /logout/i }).click();
+    // After logout, login form reappears
+    await expect(page.getByLabelText("Username")).toBeVisible();
   });
 
-  test("invalid login", async ({ page }) => {
+  test("invalid login shows error", async ({ page }) => {
     await page.goto("/");
     await page.getByLabel("Username").fill("wrong");
     await page.getByLabel("Password").fill("wrong");
-    await page.getByRole("button", { name: "Login" }).click();
-    await expect(page.getByText("Invalid credentials")).toBeVisible();
+    await page.getByRole("button", { name: /sign in/i }).click();
+    await expect(page.getByText(/invalid username or password/i)).toBeVisible();
   });
 
   test("board loads seeded data", async ({ page }) => {
@@ -43,20 +53,32 @@ test.describe("Kanban board", () => {
     await expect(page.getByText("Ideas")).toBeVisible();
   });
 
-  test("add and delete flow with confirmation overlay", async ({ page }) => {
-    await page.getByRole("button", { name: "Add card" }).first().click();
+  test("add card with priority", async ({ page }) => {
+    await page.getByRole("button", { name: /add card to backlog/i }).click();
 
     await page.getByLabel("Card title").fill("QA prep");
     await page.getByLabel("Card details").fill("Build a quick regression checklist.");
+    await page.getByLabel("Card priority").selectOption("high");
     await page.getByRole("button", { name: "Add card" }).click();
 
-    const card = page.locator("[data-card-title='QA prep']");
+    await expect(page.locator("[data-card-title='QA prep']")).toBeVisible();
+    await expect(page.locator("[data-card-title='QA prep']").getByText("high")).toBeVisible();
+  });
+
+  test("delete card flow", async ({ page }) => {
+    await page.getByRole("button", { name: /add card to backlog/i }).click();
+
+    await page.getByLabel("Card title").fill("Delete me");
+    await page.getByLabel("Card details").fill("Temporary card.");
+    await page.getByRole("button", { name: "Add card" }).click();
+
+    const card = page.locator("[data-card-title='Delete me']");
     await expect(card).toBeVisible();
 
     await card.getByRole("button", { name: "Delete card" }).click();
     await page.getByRole("button", { name: "Delete" }).click();
 
-    await expect(page.locator("[data-card-title='QA prep']")).toHaveCount(0);
+    await expect(page.locator("[data-card-title='Delete me']")).toHaveCount(0);
   });
 
   test("edit card flow", async ({ page }) => {
@@ -70,8 +92,24 @@ test.describe("Kanban board", () => {
     await expect(page.getByText("Design critique")).toBeVisible();
   });
 
+  test("add and delete a column", async ({ page }) => {
+    await page.getByRole("button", { name: /add column/i }).click();
+    await page.getByLabel("New column name").fill("Design");
+    await page.getByRole("button", { name: /^add$/i }).click();
+    await expect(page.getByText("Design")).toBeVisible();
+  });
+
+  test("card search filters cards", async ({ page }) => {
+    await page.getByLabel("Search cards").fill("kickoff");
+    // Kickoff meeting card is in Done column
+    await expect(page.locator("[data-card-title='Kickoff meeting']")).toBeVisible();
+    // Other cards should not be shown
+    await expect(page.locator("[data-card-title='Design review']")).toHaveCount(0);
+  });
+
   test("drag-and-drop move across columns", async ({ page }) => {
     await page.goto("/");
+    await loginAsDefaultUser(page);
 
     const source = page.locator("[data-card-title='Draft onboarding flow']");
     const target = page.locator("[data-testid='column-drop-in-progress']");

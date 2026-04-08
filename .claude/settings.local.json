@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git ls-tree:*)",
+      "Bash(git rm:*)",
+      "Skill(update-config)",
+      "Bash(wc:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m pytest backend/test_main.py -v --tb=short)",
+      "Bash(npm --prefix frontend test -- --run)",
+      "Bash(npm test:*)",
+      "Bash(python -m pytest backend/test_main.py -v)",
+      "Bash(python -m pytest backend/test_main.py::test_login_default_user -v -s)",
+      "Bash(python -m pytest backend/test_main.py -v -s -k \"test_login_default_user or test_login_wrong\")",
+      "Bash(python -m pytest backend/test_main.py -v --tb=long)",
+      "Bash(python -m pytest backend/test_main.py --tb=short)",
+      "Bash(npm run:*)",
+      "Bash(python -m pytest backend/test_main.py --tb=short -q)",
+      "Bash(python -m pytest backend/test_main.py -q --tb=short -x)",
+      "Bash(python:*)"
+    ]
+  }
+}

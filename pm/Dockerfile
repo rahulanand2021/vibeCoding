@@ -1,15 +1,21 @@
 # 1) Build frontend static files
 FROM node:20-alpine AS frontend-build
-WORKDIR /app
+WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
-COPY frontend ./frontend
-WORKDIR /app/frontend
+COPY frontend .
 RUN npm run build
 
 # 2) Build backend image
 FROM python:3.12-slim
 WORKDIR /app
+
+# Install build tools needed for bcrypt native extension
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY backend/requirements.txt ./backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
 

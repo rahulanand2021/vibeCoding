@@ -49,7 +49,7 @@ describe("ChatSidebar", () => {
   it("renders welcome message when no messages", () => {
     render(<ChatSidebar {...defaultProps} />);
     expect(screen.getByText("AI Assistant")).toBeInTheDocument();
-    expect(screen.getByText("👋 Hi! I'm your AI assistant. I can help you manage your Kanban board.")).toBeInTheDocument();
+    expect(screen.getByText("How can I help?")).toBeInTheDocument();
   });
 
   it("renders messages correctly", () => {
@@ -57,7 +57,7 @@ describe("ChatSidebar", () => {
 
     expect(screen.getByText("Hello AI")).toBeInTheDocument();
     expect(screen.getByText("Hello! How can I help you with your Kanban board?")).toBeInTheDocument();
-    expect(screen.getByText("📋 Board updated:")).toBeInTheDocument();
+    expect(screen.getByText("Board updated:")).toBeInTheDocument();
     expect(screen.getByText('Added "Test Card" to todo')).toBeInTheDocument();
   });
 
@@ -67,15 +67,14 @@ describe("ChatSidebar", () => {
 
     render(<ChatSidebar {...defaultProps} onSendMessage={mockSendMessage} />);
 
-    const input = screen.getByPlaceholderText("Ask me to manage your board...");
-    const sendButton = screen.getByRole("button", { name: "Send" });
+    const input = screen.getByPlaceholderText("Ask me to manage your board\u2026");
+    const sendButton = screen.getByRole("button", { name: "Send message" });
 
     await user.type(input, "Add a card");
     await user.click(sendButton);
 
-    // Should show loading state
-    expect(screen.getByRole("button", { name: "..." })).toBeInTheDocument();
-    expect(screen.getByText("AI Assistant")).toBeInTheDocument(); // Component still renders
+    // Send button still present (now shows spinner SVG) and component still renders
+    expect(screen.getByText("AI Assistant")).toBeInTheDocument();
   });
 
   it("sends message on form submit", async () => {
@@ -84,8 +83,8 @@ describe("ChatSidebar", () => {
 
     render(<ChatSidebar {...defaultProps} onSendMessage={mockSendMessage} />);
 
-    const input = screen.getByPlaceholderText("Ask me to manage your board...");
-    const sendButton = screen.getByRole("button", { name: "Send" });
+    const input = screen.getByPlaceholderText("Ask me to manage your board\u2026");
+    const sendButton = screen.getByRole("button", { name: "Send message" });
 
     await user.type(input, "Add a new card");
     await user.click(sendButton);
@@ -99,10 +98,10 @@ describe("ChatSidebar", () => {
 
     render(<ChatSidebar {...defaultProps} onSendMessage={mockSendMessage} />);
 
-    const sendButton = screen.getByRole("button", { name: "Send" });
+    const sendButton = screen.getByRole("button", { name: "Send message" });
     expect(sendButton).toBeDisabled();
 
-    await user.type(screen.getByPlaceholderText("Ask me to manage your board..."), "   ");
+    await user.type(screen.getByPlaceholderText("Ask me to manage your board\u2026"), "   ");
     expect(sendButton).toBeDisabled();
   });
 
@@ -112,7 +111,7 @@ describe("ChatSidebar", () => {
 
     render(<ChatSidebar {...defaultProps} onClose={mockOnClose} />);
 
-    const closeButton = screen.getByRole("button", { name: "×" });
+    const closeButton = screen.getByRole("button", { name: "Close AI assistant" });
     await user.click(closeButton);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);

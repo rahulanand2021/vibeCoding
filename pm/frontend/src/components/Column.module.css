@@ -1,24 +1,37 @@
 .column {
-  background: var(--surface);
+  background: rgba(247, 245, 242, 0.85);
   border-radius: var(--radius-lg);
-  padding: 16px;
+  padding: 14px 12px 16px;
   border: 1px solid var(--border-soft);
-  box-shadow: 0 6px 18px rgba(3, 33, 71, 0.06);
+  box-shadow: 0 4px 14px rgba(3, 33, 71, 0.05);
   display: flex;
   flex-direction: column;
   min-height: 320px;
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
 
 .columnOver {
-  border-color: rgba(32, 157, 215, 0.5);
-  box-shadow: 0 10px 22px rgba(32, 157, 215, 0.15);
+  border-color: rgba(32, 157, 215, 0.45);
+  box-shadow: 0 8px 24px rgba(32, 157, 215, 0.14);
+  background: rgba(32, 157, 215, 0.04);
 }
 
+/* ── Column header: single horizontal row ─────────────────── */
 .columnHeader {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 14px;
+  min-height: 32px;
+}
+
+.columnTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
 }
 
 .columnTitleButton {
@@ -27,42 +40,118 @@
   padding: 0;
   text-align: left;
   cursor: pointer;
+  min-width: 0;
+  flex: 1;
 }
 
 .columnTitle {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: var(--dark-navy);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.columnTitle:hover {
+  color: var(--blue-primary);
+}
+
+.cardCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  background: rgba(3, 33, 71, 0.08);
+  color: var(--gray-text);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
 
 .columnInput {
-  width: 100%;
-  padding: 8px 10px;
+  flex: 1;
+  padding: 5px 8px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(3, 33, 71, 0.2);
-  font-size: 1rem;
+  border: 1px solid rgba(32, 157, 215, 0.5);
+  font-size: 0.9rem;
+  font-weight: 700;
   background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(32, 157, 215, 0.12);
+  color: var(--dark-navy);
 }
 
+/* ── Add card button: icon-only pill ──────────────────────── */
 .addCardButton {
-  align-self: flex-start;
-  background: rgba(117, 57, 145, 0.12);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: rgba(117, 57, 145, 0.1);
   color: var(--purple-secondary);
   border: none;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1;
+  transition: background 0.15s, transform 0.1s;
 }
 
 .addCardButton:hover {
-  background: rgba(117, 57, 145, 0.2);
+  background: rgba(117, 57, 145, 0.22);
+  transform: scale(1.08);
 }
 
+.addCardButton:active {
+  transform: scale(0.96);
+}
+
+.columnHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.deleteColumnButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  color: rgba(3, 33, 71, 0.3);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  opacity: 0;
+}
+
+.column:hover .deleteColumnButton {
+  opacity: 1;
+}
+
+.deleteColumnButton:hover {
+  background: rgba(184, 0, 31, 0.09);
+  color: #b8001f;
+}
+
+/* ── Card list drop zone ──────────────────────────────────── */
 .cardList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  flex: 1;
   min-height: 40px;
 }
